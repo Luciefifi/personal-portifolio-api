@@ -62,6 +62,47 @@ class blogController{
 
         }
     }
+    //deleting a blog
+    static async deleteBlog(req , res){
+        try{
+            const deletedBlog =  await Blog.findByIdAndDelete(req.params.id)
+            res.status(200).json({
+                status:"success",
+                "message":"Blog deleted successfully"
+            })
+
+        }catch(error){
+            res.status(500).json({
+                status:"fail",
+                error:error.message
+            })
+
+        }
+    }
+
+    //updating a blog
+   static async updateBlog(req,res){
+    try{
+        const updatedBlog = await Blog.findByIdAndUpdate(req.params.id,{$set:{
+            title:req.body.title,
+            image:req.body.image,
+            description:req.body.description
+        }},{new:true});
+        res.status(200).json({
+            status:"success",
+            message:"message updated successfully",
+            data:updatedBlog
+        })
+
+    }catch(error){
+        res.status(500).json({
+            status:'fail',
+            error:error.message
+        })
+
+    }
+   }
+
 }
 
 export default blogController;
