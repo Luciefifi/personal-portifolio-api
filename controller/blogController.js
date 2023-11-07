@@ -1,11 +1,23 @@
 import Blog from "../model/blogModel.js";
+import cloudinary from "../utils/cloudinary.js";
+import upload from "../utils/multer.js";
 
 class blogController{
     static async createBlog(req,res){
        try{
+        //upload image to the cloudinary
+        const uploadImages = await Promise.all(
+            req.files.map(async(file)=>{
+        const images = await cloudinary.uploader.upload(file.path)
+        return images.secure_url
+
+
+            })
+        )
+        console.log("your image is", uploadImages)
         const blog = new Blog({
             title:req.body.title,
-            image:req.body.image,
+            image:uploadImages,
             description:req.body.description,
         });
         await blog.save();
