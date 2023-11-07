@@ -9,5 +9,5 @@ blogRoute.post('/create',multipleUpload  ,blogController.createBlog)
 blogRoute.get('/blogs',blogController.getAllBlogs)
 blogRoute.get('/blog/:id',blogController.getSingleBlog)
 blogRoute.delete('/blog/:id',blogController.deleteBlog)
-blogRoute.patch('/blog/:id',blogController.updateBlog)
+blogRoute.patch('/blog/:id',multipleUpload , blogController.updateBlog)
 export default blogRoute
