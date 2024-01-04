@@ -108,7 +108,7 @@ class blogController {
 
       const updatedImages = [...uploadImages];
 
-      // Update the blog with new information
+      // Updating a blog with new information
       const updatedBlog = await Blog.findByIdAndUpdate(
         req.params.id,
         {
