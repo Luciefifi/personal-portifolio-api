@@ -1,7 +1,19 @@
 import User from "../model/userModel.js";
+import userValidationSchema from "../validations/userValidation.js";
 class userController {
   static async createUser(req, res) {
+
+   
     try {
+       //user validation
+     
+       const { error } = userValidationSchema.validate(req.body);
+
+       if (error)
+         return res.status(400).json({
+           status: "fail",
+           validationError: error.details[0].message,
+         });
       const user = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -20,7 +32,7 @@ class userController {
         status: "Fail",
         message: error.message,
       });
-      console.log(error)
+      console.log(error);
     }
   }
   static async getSingleUser(req, res) {
@@ -59,7 +71,6 @@ class userController {
           status: "fail",
           message: "User not found",
         });
-
       }
       res.status(200).json({
         status: "success",
@@ -70,44 +81,39 @@ class userController {
         status: "fail",
         message: error.message,
       });
-
-
     }
   }
-  static async updateUser(req,res){
-    try{
+  static async updateUser(req, res) {
+    try {
       const existingUser = await User.findById(req.params.id);
-      if(!existingUser)
-      {
+      if (!existingUser) {
         res.status(404).json({
-          status:"fail",
-          message:"User not found"
-        })
+          status: "fail",
+          message: "User not found",
+        });
       }
-const updatedUser =  await User.findByIdAndUpdate(
-  req.params.id,
-  {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-    confirmPassword: req.body.confirmPassword,
-  },
-  {new:true}
-  );
-  res.status(200).json({
-    status:"success",
-    message:"User updated successfully",
-    data:updatedUser
-  })
-
-      }
-      catch(error){
-        res.status(500).json({
-          status:"fail",
-          message:"Something went wrong"
-        })
-      }
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          email: req.body.email,
+          password: req.body.password,
+          confirmPassword: req.body.confirmPassword,
+        },
+        { new: true }
+      );
+      res.status(200).json({
+        status: "success",
+        message: "User updated successfully",
+        data: updatedUser,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "fail",
+        message: "Something went wrong",
+      });
     }
   }
+}
 export default userController;

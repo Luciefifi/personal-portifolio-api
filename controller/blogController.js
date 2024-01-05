@@ -1,10 +1,20 @@
 import Blog from "../model/blogModel.js";
 import cloudinary from "../utils/cloudinary.js";
+import blogValidationSChema from "../validations/blogValidation.js";
 import upload from "../utils/multer.js";
 
 class blogController {
   static async createBlog(req, res) {
     try {
+      //validation
+      const { error } = blogValidationSChema.validate(req.body);
+
+      if (error)
+        return res.status(400).json({
+          status: "fail",
+          validationError: error.details[0].message,
+        });
+
       //upload image to the cloudinary
       const uploadImages = await Promise.all(
         req.files.map(async (file) => {
@@ -31,7 +41,7 @@ class blogController {
         status: "fail",
         error: error,
       });
-      console.log(error.message);
+      console.log(error);
     }
   }
   static async getAllBlogs(req, res) {
