@@ -1,5 +1,6 @@
 import User from "../model/userModel.js";
 import userValidationSchema from "../validations/userValidation.js";
+import bcrypt from 'bcrypt'
 class userController {
   static async createUser(req, res) {
 
@@ -14,12 +15,15 @@ class userController {
            status: "fail",
            validationError: error.details[0].message,
          });
+
+         const hashedPassword = await bcrypt.hash(req.body.password, 10);
+         const hashedConfirmPassword = await bcrypt.hash(req.body.confirmPassword,10)
       const user = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        password: req.body.password,
-        confirmPassword: req.body.confirmPassword,
+        password: hashedPassword,
+        confirmPassword: hashedConfirmPassword,
       });
       await user.save();
       res.status(200).json({
