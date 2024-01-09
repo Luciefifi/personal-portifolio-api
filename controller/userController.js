@@ -1,23 +1,34 @@
 import User from "../model/userModel.js";
 import userValidationSchema from "../validations/userValidation.js";
-import bcrypt from 'bcrypt'
+import bcrypt from "bcrypt";
+import Jwt from "jsonwebtoken";
 class userController {
   static async createUser(req, res) {
-
-   
     try {
-       //user validation
-     
-       const { error } = userValidationSchema.validate(req.body);
+      //user validation
 
-       if (error)
-         return res.status(400).json({
-           status: "fail",
-           validationError: error.details[0].message,
-         });
+      const { error } = userValidationSchema.validate(req.body);
 
-         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-         const hashedConfirmPassword = await bcrypt.hash(req.body.confirmPassword,10)
+      if (error)
+        return res.status(400).json({
+          status: "fail",
+          validationError: error.details[0].message,
+        });
+
+      const checkduplicatedEmail = await User.findOne({ email: User.email });
+      if (checkduplicatedEmail) {
+        return res.status(400).json({
+          status: "fail",
+          message: `User with ${req.body.email} already exist`,
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const hashedConfirmPassword = await bcrypt.hash(
+        req.body.confirmPassword,
+        10
+      );
+
       const user = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -39,6 +50,54 @@ class userController {
       console.log(error);
     }
   }
+
+  //login
+  static async login(req, res) {
+    try {
+      const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        return res.status(400).json({
+          status: "fail",
+          message: "Invalid email",
+        });
+      }
+
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      console.log("password", req.body.password);
+      console.log("user password", user.password);
+      console.log("valid", validPassword);
+
+      if (!validPassword) {
+        return res.status(400).json({
+          status: "fail",
+          message: "Invalid  password",
+        });
+      }
+
+      // create token
+      const token = Jwt.sign({ data: user }, process.env.JWT_SECRET, {
+        expiresIn: "2d",
+      });
+
+      // res.header("auth_token", token);
+      res.status(200).json({
+        status: "success",
+        message: "User logged in successfully",
+        user: user,
+        token: token,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        status: "fail",
+        message: err.message,
+      });
+    }
+  }
+
   static async getSingleUser(req, res) {
     try {
       const singleUser = await User.findById(req.params.id);
@@ -56,6 +115,10 @@ class userController {
   static async getAllUsers(req, res) {
     try {
       const allUsers = await User.find();
+      if (allUsers.length === 0)
+        res.status(404).json({
+          message: "No user found",
+        });
       res.status(200).json({
         status: "success",
         data: allUsers,
