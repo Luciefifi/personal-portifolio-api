@@ -14,7 +14,7 @@ const userValidationSchema = Joi.object({
     }),
 
   lastName: Joi.string()
-    .min(10)
+    .min(7)
     .max(20)
     .required()
     .pattern(/^[A-Za-z]+$/)

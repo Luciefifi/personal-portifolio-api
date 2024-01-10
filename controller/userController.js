@@ -82,7 +82,7 @@ class userController {
         expiresIn: "2d",
       });
 
-      // res.header("auth_token", token);
+      res.header("auth_token", token);
       res.status(200).json({
         status: "success",
         message: "User logged in successfully",
