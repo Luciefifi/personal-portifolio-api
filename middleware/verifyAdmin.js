@@ -12,7 +12,7 @@ const verifyAdmin = (req, res, next) =>{
     try{
 const decodedToken = Jwt.verify(token, process.env.JWT_SECRET)
 
-    req.user = decodedToken.data
+    req.user = decodedToken.user
     const userRole = req.user.role
     console.log("user role", userRole)
     if(userRole !== "Admin")
@@ -22,7 +22,7 @@ const decodedToken = Jwt.verify(token, process.env.JWT_SECRET)
             message:"You are not allowed to perfom this action"
         })
     }
-    next();
+
 
 
 
@@ -35,6 +35,7 @@ res.status(500).json({
 
 })
     }
+    next();
 }
 
 export default verifyAdmin;

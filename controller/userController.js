@@ -78,15 +78,22 @@ class userController {
       }
 
       // create token
-      const token = Jwt.sign({ data: user }, process.env.JWT_SECRET, {
+
+
+      
+      const token = Jwt.sign({ user:{
+        firstName:user.firstName,
+        lastName:user.lastName,
+        email:user.email,
+        role:user.role
+      } }, process.env.JWT_SECRET, {
         expiresIn: "2d",
       });
 
-      res.header("auth_token", token);
       res.status(200).json({
         status: "success",
         message: "User logged in successfully",
-        user: user,
+        // user: user,
         token: token,
       });
     } catch (err) {
