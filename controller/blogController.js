@@ -2,6 +2,7 @@ import Blog from "../model/blogModel.js";
 import cloudinary from "../utils/cloudinary.js";
 import blogValidationSChema from "../validations/blogValidation.js";
 import upload from "../utils/multer.js";
+import User from "../model/userModel.js";
 
 class blogController {
   static async createBlog(req, res) {
@@ -22,19 +23,30 @@ class blogController {
           return images.secure_url;
         })
       );
-      console.log("your image is", uploadImages);
+ 
+      const user_id = req.user.id
+
+      
       const blog = new Blog({
         title: req.body.title,
         image: uploadImages,
         description: req.body.description,
+        user_id,
+        createdBy:req.user.id
       });
+     
       await blog.save();
-      console.log("blog created successfullly");
+      const populatedBlog = await Blog.findById(blog._id).populate({
+        path: 'createdBy',
+        select: 'firstName', // Assuming name is a field in your User model
+      });
+      
+      
 
       res.status(201).json({
         status: "success",
         message: "blog created successfully",
-        data: blog,
+        data: populatedBlog,
       });
     } catch (error) {
       res.status(500).json({

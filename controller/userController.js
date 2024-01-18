@@ -85,7 +85,8 @@ class userController {
         firstName:user.firstName,
         lastName:user.lastName,
         email:user.email,
-        role:user.role
+        role:user.role,
+        id:user._id
       } }, process.env.JWT_SECRET, {
         expiresIn: "2d",
       });
