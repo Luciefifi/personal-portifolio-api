@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import dbConn from './db.js';
 import blogRoute from './routes/blogRoute.js';
 import userRoute from './routes/userRoute.js';
+import messageRoute from './routes/messageRoute.js';
 import cors from 'cors'
 import passport from 'passport';
 import authRoute from './routes/authRoute.js'
@@ -36,4 +37,5 @@ app.listen(PORT,()=>{
 })
 app.use('/api', blogRoute)
 app.use('/api',userRoute)
+app.use('/api',messageRoute)
 authRoute(app);
