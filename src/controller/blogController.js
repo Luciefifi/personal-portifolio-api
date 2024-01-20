@@ -1,8 +1,8 @@
 import Blog from "../model/blogModel.js";
 import cloudinary from "../utils/cloudinary.js";
 import blogValidationSChema from "../validations/blogValidation.js";
-import upload from "../utils/multer.js";
-import User from "../model/userModel.js";
+
+
 
 class blogController {
   static async createBlog(req, res) {
