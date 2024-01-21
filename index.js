@@ -2,15 +2,18 @@ import express from 'express'
 import mongoose from "mongoose";
 import dotenv from 'dotenv'
 import dbConn from './db.js';
-import blogRoute from './routes/blogRoute.js';
-import userRoute from './routes/userRoute.js';
-import messageRoute from './routes/messageRoute.js';
+import blogRoute from './src/routes/blogRoute.js'
+import userRoute from './src/routes/userRoute.js';
+import messageRoute from './src/routes/messageRoute.js';
 import cors from 'cors'
 import passport from 'passport';
-import authRoute from './routes/authRoute.js'
+import authRoute from './src/routes/authRoute.js'
 import session from 'express-session';
+import swaggerUi from "swagger-ui-express";
+import documentations from './src/apiDocs/swagger.js';
 
-import './service/passport.js'
+
+import './src/service/passport.js'
 dotenv.config();
 const app = express();
 
@@ -35,6 +38,9 @@ app.use(passport.session());
 app.listen(PORT,()=>{
     console.log(`Server Started at :${PORT}`)
 })
+
+app.use("/docs" ,swaggerUi.serve)
+app.use("/docs" ,swaggerUi.setup(documentations))
 app.use('/api', blogRoute)
 app.use('/api',userRoute)
 app.use('/api',messageRoute)

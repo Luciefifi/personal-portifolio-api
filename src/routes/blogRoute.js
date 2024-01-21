@@ -8,7 +8,7 @@ import verifyToken from '../middleware/authentication.js'
 const blogRoute = express.Router();
 
 blogRoute.post('/create',multipleUpload, verifyAdmin,blogController.createBlog)
-blogRoute.get('/blogs',verifyToken, blogController.getAllBlogs)
+blogRoute.get('/blogs', blogController.getAllBlogs)
 blogRoute.get('/blog/:id',verifyAdmin,blogController.getSingleBlog)
 blogRoute.delete('/blog/:id',blogController.deleteBlog)
 blogRoute.patch('/blog/:id',multipleUpload , blogController.updateBlog)
