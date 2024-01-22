@@ -63,11 +63,6 @@ const createMessage = {
     
     tags:["Messages"],
     description: "list of all messages",
-    // security: [
-    //     {
-    //       auth_token: [],
-    //     },
-    //   ],
     responses:{
         200:{
             description:"OK",
@@ -85,7 +80,6 @@ const createMessage = {
 };
 
 
-//get single message swagger documentation
 const getSingleMessage={
     tags:["Messages"],
     summary:"get message by path id",
@@ -111,8 +105,6 @@ const getSingleMessage={
                 "application/json":{
                     schema:{
                         type:"object",
-
-  
                     },
                 },
             },
