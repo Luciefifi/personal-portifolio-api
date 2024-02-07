@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    lastPasswordChange: {
+        type: Date,
+        default: Date.now
+      },
     createdAt:{
         type:Date,
         default:Date.now,

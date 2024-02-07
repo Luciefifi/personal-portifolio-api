@@ -2,6 +2,7 @@ import User from "../model/userModel.js";
 import userValidationSchema from "../validations/userValidation.js";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/sendEmail.js";
 class userController {
   static async createUser(req, res) {
     try {
@@ -15,7 +16,7 @@ class userController {
           validationError: error.details[0].message,
         });
 
-      const checkduplicatedEmail = await User.findOne({ email: User.email });
+      const checkduplicatedEmail = await User.findOne({ email: req.body.email });
       if (checkduplicatedEmail) {
         return res.status(400).json({
           status: "fail",
@@ -37,11 +38,18 @@ class userController {
         confirmPassword: hashedConfirmPassword,
       });
       await user.save();
+      console.log("userter" , req.body.email)
+      sendEmail({to:req.body.email, subject: "User registration" , html: `<div style="padding: 10px 0;">
+      <h3> ${req.body.firstName} ${req.body.lastName} thank you for registering on our platform! </h3> 
+      <h4> Click the button below to verify your email... </h4>
+      
+  </div>`})
       res.status(200).json({
         status: "success",
         message: "User created successfully",
         data: user,
       });
+     
     } catch (error) {
       res.status(500).json({
         status: "Fail",
